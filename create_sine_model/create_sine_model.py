@@ -1,12 +1,13 @@
 # TensorFlow is an open source machine learning library
-import tensorflow as tf
+
 # Numpy is a math library
 import numpy as np
-import matplotlib
 # Matplotlib is a graphing library
 import matplotlib.pyplot as plt
 # math is Python's math library
 import math
+
+import tensorflow as tf
 
 
 
@@ -40,9 +41,38 @@ x_train, x_validate, x_test = np.split(x_values, [TRAIN_SPLIT, TEST_SPLIT])
 y_train, y_validate, y_test = np.split(y_values, [TRAIN_SPLIT, TEST_SPLIT])
 # Double check that our splits add up correctly
 assert (x_train.size + x_validate.size + x_test.size) == SAMPLES
-# Plot the data in each partition in different colors:
-plt.plot(x_train, y_train, 'b.', label="Train")
-plt.plot(x_validate, y_validate, 'y.', label="Validate")
-plt.plot(x_test, y_test, 'r.', label="Test")
+
+# We'll use Keras to create a simple model architecture
+from tensorflow.keras import layers
+model_1 = tf.keras.Sequential()
+# First layer takes a scalar input and feeds it through 16 "neurons." The
+# neurons decide whether to activate based on the 'relu' activation function.
+model_1.add(layers.Dense(16, activation='relu', input_shape=(1,)))
+# Final layer is a single neuron, since we want to output a single value
+model_1.add(layers.Dense(1))
+# Compile the model using a standard optimizer and loss function for regression
+model_1.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])
+# Print a summary of the model's architecture
+model_1.summary()
+
+history_1 = model_1.fit(x_train, y_train, epochs=1000, batch_size=16, validation_data=(x_validate, y_validate))
+loss = history_1.history['loss']
+val_loss = history_1.history['val_loss']
+epochs = range(1, len(loss) + 1)
+plt.plot(epochs, loss, 'g.', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+
+# Exclude the first few epochs so the graph is easier to read
+SKIP = 100
+plt.plot(epochs[SKIP:], loss[SKIP:], 'g.', label='Training loss')
+plt.plot(epochs[SKIP:], val_loss[SKIP:], 'b.', label='Validation loss')
+plt.title('Training and validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
 plt.legend()
 plt.show()
