@@ -59,13 +59,6 @@ history_1 = model_1.fit(x_train, y_train, epochs=1000, batch_size=16, validation
 loss = history_1.history['loss']
 val_loss = history_1.history['val_loss']
 epochs = range(1, len(loss) + 1)
-plt.plot(epochs, loss, 'g.', label='Training loss')
-plt.plot(epochs, val_loss, 'b', label='Validation loss')
-plt.title('Training and validation loss')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.legend()
-plt.show()
 
 # Exclude the first few epochs so the graph is easier to read
 SKIP = 100
